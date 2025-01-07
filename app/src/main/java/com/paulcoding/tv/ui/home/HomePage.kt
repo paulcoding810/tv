@@ -4,9 +4,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
@@ -20,13 +17,6 @@ import kotlinx.coroutines.launch
 @Composable
 fun HomePage(navController: NavController, viewModel: TVViewModal) {
     val scope = rememberCoroutineScope()
-    val uiState by viewModel.stateFlow.collectAsState()
-
-    LaunchedEffect(uiState.videoUrl) {
-        uiState.videoUrl?.let {
-            navController.navigate("player")
-        }
-    }
 
     Column {
         Button(onClick = {
@@ -36,7 +26,9 @@ fun HomePage(navController: NavController, viewModel: TVViewModal) {
         }
         Box(modifier = Modifier.clickable {
             scope.launch {
-                viewModel.getUrl()
+                viewModel.getUrl {
+                    navController.navigate("player")
+                }
             }
         }) {
             Text("View Player")

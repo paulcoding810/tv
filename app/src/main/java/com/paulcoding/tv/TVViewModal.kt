@@ -20,12 +20,13 @@ class TVViewModal : ViewModel() {
         _stateFlow.value = _stateFlow.value.copy(error = th)
     }
 
-    suspend fun getUrl() {
+    suspend fun getUrl(callback: () -> Unit) {
         _stateFlow.value = _stateFlow.value.copy(isLoading = true)
 
         vtvApi.getTVUrl()
             .onSuccess {
                 _stateFlow.value = _stateFlow.value.copy(videoUrl = it)
+                callback()
             }
             .onFailure {
                 setError(it)
